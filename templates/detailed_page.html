@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <!-- Import Montserrat font -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <!-- Nomalize.css fixes lot of differences between browsers default styles -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css" />
+
+    <!-- favicon -->
+    <link rel="shortcut icon" href="/static/img/wic.jpg">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- project wide styling -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="{{ url_for('static', filename='js/jquery.tablesorter.js') }}" defer></script> 
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/site.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/header.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/footer.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/background.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/button.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/card.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/table.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/form.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/grid.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/utils.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/pagination.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/sign_up.css') }}">
+    <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/registration.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/login.js') }}" defer></script>
+    <link href='https://fonts.googleapis.com/css?family=Passion+One' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Oxygen' rel='stylesheet' type='text/css'>
+
+    <!-- page specific styling -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/detailed-view.css') }}">
+</head>
+<body>
+    <div id="body-wrapper">
+        <header class="clearfix">
+            <img id="header-logo" src="{{ url_for('static', filename='assets/codecool-logo.png') }}" alt="Codecool Logo">
+            <span id="header-title" class="title">
+                    Codecool Series DB
+                </span>
+            <div id="header-auth">
+                <button type="button" id="bt_register">Register</button>
+                <button type="button" id="bt_login">Login</button>
+            </div>
+          
+        </header>
+        {% for item in detailed_info %}
+        <div class="card detailed-view" data-class="{{ item.id }}">
+            <p>And here is a "detailed" kind of view:</p>
+                <div class="row">
+                    <img src="{{ item.poster }}" alt="{{ item.title }} poster" class="poster col col-third">
+                    <div class="col col-twothird">
+                        <h2>{{ item.title }}</h2>
+                        <p class="small grayed">{{ item.runtime }} min<span class="separator">|</span>{{ item.string_agg }}<span class="separator">|</span> {{ item.year }}</p>
+                        <p>{{ item.overview }}</p>
+                    
+                        <button class="trailer_button" type="button"> Trailer </button>
+                        <button class="seasons_button" type="button">List of seasons </button>
+                        <button class="seasons_button" type="button">Cast and crew</button>
+                        <a href="/"><button type="button">Back to main page </button></a>
+                    </div>
+                </div>
+        </div>
+        
+        <div class="card detailed-view trailer">
+            {% if item.trailer == None %}
+            <form action="/detailed/{{ item.id }}/youtube" method="POST">
+                <h3> No embedded video </h3>
+                <p> Do you know any trailer to this TV show? Put the link of trailer here! </p>
+                <input name="youtube_link" placeholder="YouTube link">
+                <span><input type="submit" value="Send trailer link"></span>
+            </form>
+            {% else %}
+                <iframe src="{{ item.trailer }}" width="400" height="300" allowfullscreen></iframe>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        <div class="card detailed-view seasons-details">
+        {% for elem in season_info %}
+        <ul class="seasons">
+            <h4><a data-id = "{{ elem.id }}" class="click-link"> {{ elem.title }} </a></h4>
+            <div class="row season_details" data-seasonid="{{ elem.id }}">
+                {% if elem.overview == None %}
+                    <p> No known summary. Do you know anything about this season? Tell us! </p>
+                    <button type="button" class="write_overview">Write overview </button>
+                    <br><br>
+                    <form action="/detailed/overview/{{ elem.show_id }}/{{ elem.id }}" method="POST">
+                        <div class="overview_input">
+                            <textarea minlength="10" name="overview_input_data" rows="5" cols="80"></textarea>
+                            <br/>
+                            <input type="submit" name="overview_submti" value="Submit">
+                        </div>
+                    </form>
+                {% else %}
+                    <p> {{ elem.overview }} </p>
+                {% endif %}
+                <button class="episodes" data-buttonid="{{ elem.id }}"> Episodes </button>
+                <br><br><br>
+                <div class="row episode-titles" data-episodeid = "{{ elem.id }}">
+                    {% for list_elem in elem.array_agg %}
+                        <li> {{ list_elem }} </li>
+                    {% endfor %}
+                </div>
+            </div>
+            
+        </ul>
+        {% endfor %}
+        </div>
+        
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        Copyright, please don't give me grade 4 (or worse)
+    </footer>
+
+    
+    <div class="background">
+        <div class="dark-blue-layer"></div>
+        <div class="light-blue-layer"></div>
+    </div>
+</body>
+</html>

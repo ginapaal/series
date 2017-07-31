@@ -1,0 +1,15 @@
+.detailed-view .poster {
+    max-width: 400px;
+}
+
+.modal-backdrop {
+    z-index: 9;
+}
+
+.seasons {
+    display: none;
+}
+
+.season_details {
+    display: none;
+}
