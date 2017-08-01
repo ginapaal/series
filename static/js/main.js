@@ -8,7 +8,7 @@ function table() {
                                     <td><a href="/detailed/${data[i]['id']}" class="detailed-link" data-id="${data[i]['id']}">${data[i]['title']}</a></td>
                                     <td>${data[i]['year']}</td>
                                     <td>${data[i]['runtime']}</td>
-                                    <td>${data[i]['string_agg']}</td>
+                                    <td>${data[i]['array_agg']}</td>
                                     <td>${data[i]['rating']}</td>
                                     <td><a href = "${data[i]['trailer']}"> ${data[i]['title']} trailer </td>
                                     <td><a href = "${data[i]['homepage']}"> Homepage of ${data[i]['title']}</td>
@@ -16,8 +16,7 @@ function table() {
                                         <button type="button" class="icon-button"><i class="fa fa-edit fa-fw"></i></button>
                                         <button type="button" class="icon-button"><i class="fa fa-trash fa-fw"></i></button>
                                     </td>
-                                    </tr>`);
-            
+                                    </tr>`);    
         }
         $('#seriesTable').tablesorter();
 
@@ -153,8 +152,7 @@ function openCloseDivs(counterType, selector){
         selector.hide(600);
     }
 }
-
-var mySelectors = ['#title', '#year', '#runtime', '#genre', '#rating', '#trailer', '#homepage'];
+var mySelectors = ['#title, #year, #runtime, #genre, #rating, #trailer, #homepage'];
 
 function main() {
     table();

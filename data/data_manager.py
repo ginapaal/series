@@ -86,22 +86,22 @@ def execute_script_file(file_path):
                 print(ex.args)
 
 
-"""def execute_select(statement, variables=None):
-   
-    Execute SELECT statement optionally parameterized
+def execute_select(statement, variables=None):
+
+    """Execute SELECT statement optionally parameterized
 
     Example:
     > execute_select('SELECT %(title)s;', variables={'title': 'Codecool'})
 
     :statment: SELECT statement
 
-    :variables:  optional parameter dict
+    :variables:  optional parameter dict"""
     result_set = []
     conn = establish_connection()
     with conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cursor:
             cursor.execute(statement, variables)
             result_set = cursor.fetchall()
-    return result_set"""
+    return result_set
 
 
 def execute_dml_statement(statement, variables=None):
@@ -122,18 +122,14 @@ def execute_dml_statement(statement, variables=None):
     return result
 
 
-def top_rated_shows(conn):
-    try:
-        cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        cursor.execute("""SELECT title, year, runtime, string_agg(genres.name, ','), rating, trailer, homepage, poster, overview, shows.id FROM shows
+def top_rated_shows():
+    statement = ("""SELECT title, year, runtime, array_agg(genres.name), rating, trailer, homepage, poster, overview, shows.id FROM shows
                     LEFT JOIN show_genres ON shows.id = show_genres.show_id
                     LEFT JOIN Genres ON genres.id = show_genres.genre_id
                     GROUP BY title, year, runtime, rating, trailer, homepage, poster, overview, shows.id
                     ORDER BY rating DESC;""")
-        rows = cursor.fetchall()
-        return rows
-    except AttributeError:
-        pass
+    rows = execute_select(statement)
+    return rows
 
 
 def reg_new_user(conn, name, email, username, password):
@@ -141,21 +137,21 @@ def reg_new_user(conn, name, email, username, password):
     cursor.execute("""INSERT INTO users (name, email, username, password) VALUES (%s, %s, %s, %s);""", (name, email, username, password))
 
 
-def get_user_data(conn, username):
-    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    cursor.execute("""SELECT username, password FROM users WHERE username = %s;""", (username,))
-    rows = cursor.fetchall()
+def get_user_data(username):
+    statement = ("""SELECT username, password FROM users WHERE username = %(username)s;""")
+    variables = {'username': username}
+    rows = execute_select(statement, variables)
     return rows
 
 
-def detailed_info(conn, show_id):
-    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    cursor.execute("""SELECT shows.id, title, year, runtime, rating, trailer, homepage, poster, overview, string_agg(genres.name, ',') FROM shows
+def detailed_info(show_id):
+    statement = ("""SELECT shows.id, title, year, runtime, rating, trailer, homepage, poster, overview, string_agg(genres.name, ',') FROM shows
                     LEFT JOIN show_genres ON shows.id = show_genres.show_id
                     LEFT JOIN Genres ON genres.id = show_genres.genre_id
-                    WHERE shows.id= %s
-                    GROUP BY shows.id, title, year, runtime, rating, trailer, homepage, poster, overview;""", (show_id,))
-    rows = cursor.fetchall()
+                    WHERE shows.id= %(show_id)s
+                    GROUP BY shows.id, title, year, runtime, rating, trailer, homepage, poster, overview;""")
+    variables = {'show_id': show_id}
+    rows = execute_select(statement, variables)
     return rows
 
 
@@ -164,17 +160,19 @@ def youtube_link(conn, trailer, show_id):
     cursor.execute("""UPDATE shows SET trailer=%s WHERE id=%s;""", (trailer, show_id))
 
 
-def season_list(conn, show_id):
-    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    cursor.execute("""SELECT seasons.id, seasons.title, seasons.overview, array_agg(episodes.title), show_id FROM seasons
+def season_list(show_id):
+    statement = ("""SELECT seasons.id, seasons.title, seasons.overview, array_agg(episodes.title), show_id FROM seasons
                         LEFT JOIN episodes ON seasons.id = episodes.season_id
-                        WHERE show_id = %s
+                        WHERE show_id = %(show_id)s
                         GROUP BY seasons.id, seasons.title, seasons.overview
-                        ORDER BY seasons.id ASC;""", (show_id,))
-    rows = cursor.fetchall()
+                        ORDER BY seasons.id ASC;""")
+    variables = {'show_id': show_id}
+    rows = execute_select(statement, variables)
     return rows
 
 
-def overview(conn, input_data, season_id):
-    cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    cursor.execute("""UPDATE seasons SET overview=%s WHERE id=%s;""", (input_data, season_id))
+def overview(overview, season_id):
+    statement = ("""UPDATE seasons SET overview=%(overview)s WHERE id=%(season_id)s;""")
+    variables = {'overview': overview, 'season_id': season_id}
+    rows = execute_select(statement, variables)
+    return rows

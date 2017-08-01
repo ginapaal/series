@@ -10,7 +10,7 @@ app.secret_key = "This is a super secret key, i am the only one, who knows the c
 
 @app.route("/table_data", methods=["GET", "POST"])
 def table_data():
-    result = data_manager.top_rated_shows(data_manager.establish_connection())
+    result = data_manager.top_rated_shows()
     for dictionary in result:
         stringified_dict = dict((k, str(v)) for k, v in dictionary.items())
         dictionary.update(stringified_dict)
@@ -49,7 +49,7 @@ def login():
         username = request.form['username']
         password = request.form['password']
         password = pw_hash.hash_pw(password)
-        data_from_db = data_manager.get_user_data(data_manager.establish_connection(), username)
+        data_from_db = data_manager.get_user_data(username)
         if data_from_db == []:
             print("no user named like this")
         else:
@@ -63,9 +63,8 @@ def login():
 
 @app.route("/detailed/<show_id>", methods=["GET", "POST"])
 def detailed(show_id):
-    detailed_info = data_manager.detailed_info(data_manager.establish_connection(), show_id)
-    season_info = data_manager.season_list(data_manager.establish_connection(), show_id)
-    print(season_info)
+    detailed_info = data_manager.detailed_info(show_id)
+    season_info = data_manager.season_list(show_id)
     return render_template("detailed_page.html", detailed_info=detailed_info, season_info=season_info)
 
 
@@ -79,10 +78,8 @@ def youtube_link(show_id):
 
 @app.route("/detailed/overview/<show_id>/<season_id>", methods=["GET", "POST"])
 def overview_handler(show_id, season_id):
-    print(show_id)
     overview_data = request.form["overview_input_data"]
-    print(overview_data)
-    data_manager.overview(data_manager.establish_connection(), overview_data, season_id)
+    data_manager.overview(overview_data, season_id)
     return redirect(url_for("detailed", show_id=show_id, season_id=season_id))
 
 

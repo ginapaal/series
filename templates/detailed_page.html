@@ -100,7 +100,7 @@
                         <div class="overview_input">
                             <textarea minlength="10" name="overview_input_data" rows="5" cols="80"></textarea>
                             <br/>
-                            <input type="submit" name="overview_submti" value="Submit">
+                            <input type="submit" name="overview_submit" value="Submit">
                         </div>
                     </form>
                 {% else %}
@@ -108,11 +108,11 @@
                 {% endif %}
                 <button class="episodes" data-buttonid="{{ elem.id }}"> Episodes </button>
                 <br><br><br>
-                <div class="row episode-titles" data-episodeid = "{{ elem.id }}">
+                <ol class="row episode-titles" data-episodeid = "{{ elem.id }}">
                     {% for list_elem in elem.array_agg %}
                         <li> {{ list_elem }} </li>
                     {% endfor %}
-                </div>
+                </ol>
             </div>
             
         </ul>
