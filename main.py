@@ -121,6 +121,7 @@ def deleted_page():
 @app.route("/deleted/restore", methods=["GET", "POST"])
 def restore_deleted_show():
     show_id = request.form['deletedShowId']
+    data_manager.restore(data_manager.establish_connection(), show_id)
     return redirect(url_for("deleted_page"))
 
 

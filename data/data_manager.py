@@ -189,3 +189,7 @@ def display_deleted_shows():
                     ORDER BY title ASC;""")
     rows = execute_select(statement)
     return rows
+
+def restore(conn, show_id):
+    cursor = conn.cursor()
+    cursor.execute("""UPDATE shows SET active=TRUE WHERE id=%s;""", (show_id,))
