@@ -13,8 +13,8 @@ function table() {
                                     <td><a href = "${data[i]['trailer']}"> ${data[i]['title']} trailer </td>
                                     <td><a href = "${data[i]['homepage']}"> Homepage of ${data[i]['title']}</td>
                                     <td class="action-column">
-                                        <button type="button" class="icon-button"><i class="fa fa-edit fa-fw"></i></button>
-                                        <button type="button" class="icon-button"><i class="fa fa-trash fa-fw"></i></button>
+                                        <a href="/edit/${data[i]['id']}"><button type="button" class="icon-button edit-button" data-id="${data[i]['id']}"><i class="fa fa-edit fa-fw"></i></button></a>
+                                        <button type="button" class="icon-button delete-button" data-id="${data[i]['id']}"><i class="fa fa-trash fa-fw"></i></button>
                                     </td>
                                     </tr>`);    
         }
@@ -152,6 +152,8 @@ function openCloseDivs(counterType, selector){
         selector.hide(600);
     }
 }
+
+
 var mySelectors = ['#title, #year, #runtime, #genre, #rating, #trailer, #homepage'];
 
 function main() {

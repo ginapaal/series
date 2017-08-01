@@ -83,6 +83,22 @@ def overview_handler(show_id, season_id):
     return redirect(url_for("detailed", show_id=show_id, season_id=season_id))
 
 
+@app.route("/edit/<show_id>", methods=["GET", "POST"])
+def edit_show(show_id):
+    detailed_info = data_manager.detailed_info(show_id)
+    return render_template("edit_show.html", detailed_info=detailed_info)
+
+
+@app.route("/edit/<show_id>/new_data", methods=["GET", "POST"])
+def new_data(show_id):
+    season = request.form["season"]
+    episode = request.form["episode"]
+    title = request.form["name"]
+    length = request.form["length"]
+    print(season, episode, title, length)
+    return redirect(url_for("edit_show"), new_data=new_data)
+
+
 def main():
     app.run(debug=True)
 

@@ -66,72 +66,46 @@
                         <h2>{{ item.title }}</h2>
                         <p class="small grayed">{{ item.runtime }} min<span class="separator">|</span>{{ item.string_agg }}<span class="separator">|</span> {{ item.year }}</p>
                         <p>{{ item.overview }}</p>
-                    
-                        <button class="trailer_button" type="button"> Trailer </button>
-                        <button class="seasons_button" type="button">List of seasons </button>
-                        <button class="seasons_button" type="button">Cast and crew</button>
                         <a href="/"><button type="button">Back to main page </button></a>
                     </div>
                 </div>
         </div>
-        
-        <div class="card detailed-view trailer">
-            {% if item.trailer == None %}
-            <form action="/detailed/{{ item.id }}/youtube" method="POST">
-                <h3> No embedded video </h3>
-                <p> Do you know any trailer to this TV show? Put the link of trailer here! </p>
-                <input name="youtube_link" placeholder="YouTube link">
-                <span><input type="submit" value="Send trailer link"></span>
-            </form>
-            {% else %}
-                <iframe src="{{ item.trailer }}" width="400" height="300" allowfullscreen></iframe>
-            {% endif %}
-        </div>
         {% endfor %}
 
-        <div class="card detailed-view seasons-details">
-        {% for elem in season_info %}
-        <ul class="seasons">
-            <h4><a data-id = "{{ elem.id }}" class="click-link"> {{ elem.title }} </a></h4>
-            <div class="row season_details" data-seasonid="{{ elem.id }}">
-                {% if elem.overview == None %}
-                    <p> No known summary. Do you know anything about this season? Tell us! </p>
-                    <button type="button" class="write_overview">Write overview </button>
-                    <br><br>
-                    <form action="/detailed/overview/{{ elem.show_id }}/{{ elem.id }}" method="POST">
-                        <div class="overview_input">
-                            <textarea minlength="10" name="overview_input_data" rows="5" cols="80"></textarea>
-                            <br/>
-                            <input type="submit" name="overview_submit" value="Submit">
-                        </div>
-                    </form>
-                {% else %}
-                    <p> {{ elem.overview }} </p>
-                {% endif %}
-                <button class="episodes" data-buttonid="{{ elem.id }}"> Episodes </button>
-                <br><br><br>
-                <ol class="row episode-titles" data-episodeid = "{{ elem.id }}">
-                    {% for list_elem in elem.array_agg %}
-                        <li> {{ list_elem }} </li>
-                    {% endfor %}
-                </ol>
-            </div>
-            
-        </ul>
+        <div class="card detailed-view">
+        {% for item in detailed_info %}
+            <form action="/edit/{{ item.id }}/new_data" method="POST">
         {% endfor %}
+                <p class="form-element">
+                    <label class="form-element-label" for="form-example-season">Season:</label>
+                    <input type="number" name="season" id="form-example-season" value="" min="1" max="30">
+                </p>
+                <p class="form-element">
+                    <label class="form-element-label" for="form-example-episode">Episode:</label>
+                    <input type="number" name="episode" id="form-example-episode" value="" min="1" max="100">
+                </p>
+                <p class="form-element">
+                    <label class="form-element-label" for="form-example-title">Title:</label>
+                    <input type="text" name="name" id="form-example-title" value="" placeholder="What the pencake?">
+                </p>
+                <p class="form-element">
+                    <label class="form-element-label" for="form-example-length">Length:</label>
+                    <input type="number" name="length" id="form-example-length" value="" min="1" max="999">
+                    <span>min.</span>
+                </p>
+                <p class="text-center">
+                    <button type="submit">Submit</button>
+                </p>
+            </form>
         </div>
-        
     </div>
 
-    <!-- Footer -->
-    <footer>
-        Copyright, please don't give me grade 4 (or worse)
-    </footer>
-
-    
     <div class="background">
         <div class="dark-blue-layer"></div>
         <div class="light-blue-layer"></div>
     </div>
+
+
 </body>
+
 </html>
