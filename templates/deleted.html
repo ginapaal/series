@@ -4,10 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    {% for elem in detailed_info %}
-        <title>{{ elem.title }}</title>
-    {% endfor %}
-    <!-- Import Montserrat font -->
+    <title>Document</title>
     <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
@@ -45,6 +42,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style/detailed-view.css') }}">
 </head>
 <body>
+
     <div id="body-wrapper">
         <header class="clearfix">
             <img id="header-logo" src="{{ url_for('static', filename='assets/codecool-logo.png') }}" alt="Codecool Logo">
@@ -52,83 +50,30 @@
                     Codecool Series DB
                 </span>
             <div id="header-auth">
-                <a href="/"><button type="button">Back to main page </button></a>
+                <a href="/"><button type="button">Back to main page</button></a>
                 <button type="button" id="bt_register">Register</button>
                 <button type="button" id="bt_login">Login</button>
             </div>
           
         </header>
-        {% for item in detailed_info %}
-        <div class="card detailed-view" data-class="{{ item.id }}">
-            <p>And here is a "detailed" kind of view:</p>
+
+       
+        {% for elem in deleted %}
+            <div class="card detailed-view">
                 <div class="row">
-                    <img src="{{ item.poster }}" alt="{{ item.title }} poster" class="poster col col-third">
+                    <img src="{{ elem.poster }}" alt="{{ elem.title }} poster" width="200px" class="poster col col-third">
                     <div class="col col-twothird">
-                        <h2>{{ item.title }}</h2>
-                        <p class="small grayed">{{ item.runtime }} min<span class="separator">|</span>{{ item.string_agg }}<span class="separator">|</span> {{ item.year }}</p>
-                        <p>{{ item.overview }}</p>
-                    
-                        <button class="trailer_button" type="button"> Trailer </button>
-                        <button class="seasons_button" type="button">List of seasons </button>
-                        <button class="seasons_button" type="button">Cast and crew</button>
+                        <h3>{{ elem.title }}</h3>
+                        <p> {{ elem.overview }} </p>
+                        <button type="button" class="bt_restore" data-id="{{ elem.id }}">Restore</button>
+                        <button type="button" class="bt_delete_again" data-id="{{ elem.id }}">Delete</button>
+                        <br><br><br>
                     </div>
                 </div>
-        </div>
-        
-        <div class="card detailed-view trailer">
-            {% if item.trailer == None %}
-            <form action="/detailed/{{ item.id }}/youtube" method="POST">
-                <h3> No embedded video </h3>
-                <p> Do you know any trailer to this TV show? Put the link of trailer here! </p>
-                <input name="youtube_link" placeholder="YouTube link">
-                <span><input type="submit" value="Send trailer link"></span>
-            </form>
-            {% else %}
-                <iframe src="{{ item.trailer }}" width="400" height="300" allowfullscreen></iframe>
-            {% endif %}
-        </div>
-        {% endfor %}
-
-        <div class="card detailed-view seasons-details">
-        {% for elem in season_info %}
-        <ul class="seasons">
-            <h4><a data-id = "{{ elem.id }}" class="click-link"> {{ elem.title }} </a></h4>
-            <div class="row season_details" data-seasonid="{{ elem.id }}">
-                {% if elem.overview == None %}
-                    <p> No known summary. Do you know anything about this season? Tell us! </p>
-                    <button type="button" class="write_overview">Write overview </button>
-                    <br><br>
-                    <form action="/detailed/overview/{{ elem.show_id }}/{{ elem.id }}" method="POST">
-                        <div class="overview_input">
-                            <textarea minlength="10" name="overview_input_data" rows="5" cols="80"></textarea>
-                            <br/>
-                            <input type="submit" name="overview_submit" value="Submit">
-                        </div>
-                    </form>
-                {% else %}
-                    <p> {{ elem.overview }} </p>
-                {% endif %}
-                <button class="episodes" data-buttonid="{{ elem.id }}"> Episodes </button>
-                <br><br><br>
-                <ol class="row episode-titles" data-episodeid = "{{ elem.id }}">
-                    {% for list_elem in elem.array_agg %}
-                        <li> {{ list_elem }} </li>
-                    {% endfor %}
-                </ol>
             </div>
-            
-        </ul>
         {% endfor %}
-        </div>
-        
     </div>
 
-    <!-- Footer -->
-    <footer>
-        Copyright, please don't give me grade 4 (or worse)
-    </footer>
-
-    
     <div class="background">
         <div class="dark-blue-layer"></div>
         <div class="light-blue-layer"></div>

@@ -13,3 +13,25 @@
 .season_details {
     display: none;
 }
+
+.deleted_boards {
+    display: inline-block;
+}
+
+.bt_restore{
+    float: right;
+    background: yellowgreen;
+    color: white;
+    font-size: 24px;
+    padding: 5px;
+    margin: 5px;
+}
+ 
+.bt_delete_again {
+    float: right;
+    background: red;
+    color: white;
+    font-size: 24px;
+    padding: 5px;
+    margin: 5px;
+}

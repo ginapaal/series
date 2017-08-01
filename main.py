@@ -12,6 +12,13 @@ app.secret_key = "This is a super secret key, i am the only one, who knows the c
 def table_data():
     result = data_manager.top_rated_shows()
     for dictionary in result:
+        for k, v in dictionary.items():
+            if k == "genres":
+                v = v.split(",")
+                if len(v) > 3:
+                    del v[3:]
+                dictionary[k] = v
+                dictionary[k] = ', '.join(dictionary[k])
         stringified_dict = dict((k, str(v)) for k, v in dictionary.items())
         dictionary.update(stringified_dict)
     json_obj = json.dumps(result)
@@ -97,6 +104,24 @@ def new_data(show_id):
     length = request.form["length"]
     print(season, episode, title, length)
     return redirect(url_for("edit_show"), new_data=new_data)
+
+
+@app.route("/delete/<show_id>", methods=["GET", "POST"])
+def delete_show(show_id):
+    data_manager.delete(data_manager.establish_connection(), show_id)
+    return redirect("/")
+
+
+@app.route("/deleted_shows")
+def deleted_page():
+    deleted = data_manager.display_deleted_shows()
+    return render_template("deleted.html", deleted=deleted)
+
+
+@app.route("/deleted/restore", methods=["GET", "POST"])
+def restore_deleted_show():
+    show_id = request.form['deletedShowId']
+    return redirect(url_for("deleted_page"))
 
 
 def main():

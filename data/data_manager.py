@@ -123,9 +123,10 @@ def execute_dml_statement(statement, variables=None):
 
 
 def top_rated_shows():
-    statement = ("""SELECT title, year, runtime, array_agg(genres.name), rating, trailer, homepage, poster, overview, shows.id FROM shows
+    statement = ("""SELECT title, year, runtime, string_agg(genres.name, ',') as genres, rating, trailer, homepage, poster, overview, shows.id FROM shows
                     LEFT JOIN show_genres ON shows.id = show_genres.show_id
                     LEFT JOIN Genres ON genres.id = show_genres.genre_id
+                    WHERE shows.active = TRUE
                     GROUP BY title, year, runtime, rating, trailer, homepage, poster, overview, shows.id
                     ORDER BY rating DESC;""")
     rows = execute_select(statement)
@@ -175,4 +176,16 @@ def overview(overview, season_id):
     statement = ("""UPDATE seasons SET overview=%(overview)s WHERE id=%(season_id)s;""")
     variables = {'overview': overview, 'season_id': season_id}
     rows = execute_select(statement, variables)
+    return rows
+
+
+def delete(conn, show_id):
+    cursor = conn.cursor()
+    cursor.execute("""UPDATE shows SET active=FALSE WHERE id=%s;""", (show_id,))
+
+
+def display_deleted_shows():
+    statement = ("""SELECT id, title, overview, poster FROM shows WHERE active=FALSE
+                    ORDER BY title ASC;""")
+    rows = execute_select(statement)
     return rows
